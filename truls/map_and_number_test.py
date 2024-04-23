@@ -65,7 +65,7 @@ def add_numbers(grid):
     
     return grid
 
-grid = createMap(10, 10)
+grid = createMap(5, 3)
 
 for row in grid:
     string_row = list(map(str, row))
