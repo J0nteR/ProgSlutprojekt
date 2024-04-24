@@ -39,8 +39,8 @@ def createMap(size, num_x):
     return grid
 
 # Hur man använder:
-size = 4
-num_x = 10
+size = 6
+num_x = 3
 grid = createMap(size, num_x)
 
 for row in grid:

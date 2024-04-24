@@ -16,15 +16,17 @@ def press(grid, user_input_x, user_input_y):
         return True
     else:
         return False
-    
+
+
+
 #Testing:
 x = "x"
 
-grid = [[1, 1, 1, 0, 0],
-        [1, x, 1, 0, 0],
-        [1, 1, 1, 0, 0],
-        [1, 1, 1, 1, 1],
-        [x, 1, 1, x, 1]]
+grid = [[x, 1, x, 2, x, x],
+        [1, 1, 1, 2, 3, 3],
+        [x, 1, 0, 0, 1, x],
+        [1, 1, 1, 2, 3, 3],
+        [x, 1, x, 2, x, x]]
 
 while True:
     user_input_x = input("Position X:")
