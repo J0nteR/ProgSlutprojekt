@@ -3,7 +3,7 @@
 
 #True = bomb, False = inte bomb
 #user_input_x och user_input_y har samma indexering som arrayen (Börjar på 0).
-def press(grid, user_input_x, user_input_y):
+def is_bomb(grid, user_input_x, user_input_y):
 
     if user_input_x > len(grid[0])-1:
         message = f"user_input_x får ej överstiga längden av arrayens rader. user_input_x = {user_input_x}, längden av arrayens rader = {len(grid[0])-1}"
@@ -15,6 +15,8 @@ def press(grid, user_input_x, user_input_y):
     if grid[user_input_y][user_input_x] == "x":
         return True
     else:
+        grid[user_input_y][user_input_x] = str(grid[user_input_y][user_input_x])
+        grid[user_input_y][user_input_x] += "c"
         return False
 
 
@@ -34,7 +36,7 @@ while True:
     user_input_x = int(user_input_x)
     user_input_y = int(user_input_y)
     
-    if press(grid, user_input_x, user_input_y):
+    if is_bomb(grid, user_input_x, user_input_y):
         print("Bomb")
     else:
         print("inte bomb")

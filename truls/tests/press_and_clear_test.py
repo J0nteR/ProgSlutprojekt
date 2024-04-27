@@ -1,3 +1,19 @@
+def is_bomb(grid, user_input_x, user_input_y):
+
+    if user_input_x > len(grid[0])-1:
+        message = f"user_input_x får ej överstiga längden av arrayens rader. user_input_x = {user_input_x}, längden av arrayens rader = {len(grid[0])-1}"
+        raise IndexError(message)
+    elif user_input_y > len(grid)-1:
+        message = f"user_input_y får ej överstiga längden av arrayen. user_input_y = {user_input_x}, längden av arrayen = {len(grid[0])-1}"
+        raise IndexError(message)
+
+    if grid[user_input_y][user_input_x] == "x":
+        return True
+    else:
+        grid[user_input_y][user_input_x] = str(grid[user_input_y][user_input_x])
+        grid[user_input_y][user_input_x] += "c"
+        return False
+
 def clear_around(grid, pos_x, pos_y):
     y = pos_y-1
     if y < 0:
@@ -25,9 +41,6 @@ def clear_around(grid, pos_x, pos_y):
     if "d" not in grid[pos_y][pos_x]:
         grid[pos_y][pos_x] += "d"
 
-#pos_x: x-cordinat där spelaren klickat
-#pos_y: y-cordinat där spelarn klickat
-#FUNKAR JUST NU BARA FÖR 0
 def clear(grid, pos_x, pos_y):
     clear_around(grid, pos_x, pos_y)
     
@@ -53,7 +66,6 @@ def clear(grid, pos_x, pos_y):
         if y > len(grid)-1:
             break
     
-#Tar bort alla "d" från griddet
 def remove_d(grid):
     for row in grid:
         cell = 0
@@ -61,8 +73,7 @@ def remove_d(grid):
             if isinstance(row[cell], str) and 'd' in row[cell]:
                 row[cell] = row[cell].replace('d', '')
             cell += 1
-            
-#Testing:
+
 x = "x"
 
 grid = [[0, 0, 0, 0, 0, 0],
@@ -72,9 +83,16 @@ grid = [[0, 0, 0, 0, 0, 0],
         [0, 0, 1, x, 3, x],
         [0, 0, 1, 1, 2, 1]]
 
-clear(grid, 0,0)
+y = 1
+x = 4
 
-remove_d(grid)
-
+if not is_bomb(grid, x, y):
+    clear(grid, x, y)
+    remove_d(grid)
+else:
+    print("Bomb")
+    
+print(grid[y][x])
 for row in grid:
-    print(row)
+    string_row = list(map(str, row))
+    print(string_row)
