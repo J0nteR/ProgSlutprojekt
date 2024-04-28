@@ -28,7 +28,8 @@ def clear_around(grid, pos_x, pos_y):
 #pos_x: x-cordinat där spelaren klickat
 #pos_y: y-cordinat där spelarn klickat
 def clear(grid, pos_x, pos_y):
-    clear_around(grid, pos_x, pos_y)
+    if grid[pos_y][pos_x] == 0 or grid[pos_y][pos_x] == "0c" or grid[pos_y][pos_x] == "0cd":
+        clear_around(grid, pos_x, pos_y)
     
     y = pos_y-1
     if y < 0:
@@ -71,7 +72,8 @@ grid = [[0, 0, 0, 0, 0, 0],
         [0, 0, 1, x, 3, x],
         [0, 0, 1, 1, 2, 1]]
 
-clear(grid, 0,5)
+
+clear(grid, 0,4)
 
 remove_d(grid)
 
