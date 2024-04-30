@@ -88,5 +88,3 @@ while True:
     game.new()
     game.run()
 
-
-
