@@ -1,7 +1,10 @@
 def flag(grid, pos_x, pos_y):
     grid[pos_y][pos_x] = str(grid[pos_y][pos_x])
     
-    if "c" not in grid[pos_y][pos_x]:
+    if "f" in grid[pos_y][pos_x]:
+        grid[pos_y][pos_x] = grid[pos_y][pos_x][0]
+    
+    elif "c" not in grid[pos_y][pos_x]:
         grid[pos_y][pos_x] += "f"
         
 # Testing
