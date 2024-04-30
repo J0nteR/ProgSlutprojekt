@@ -144,6 +144,12 @@ def remove_d(grid):
                 row[cell] = row[cell].replace('d', '')
             cell += 1
 
+def flag(grid, pos_x, pos_y):
+    grid[pos_y][pos_x] = str(grid[pos_y][pos_x])
+    
+    if "c" not in grid[pos_y][pos_x]:
+        grid[pos_y][pos_x] += "f"
+
 def create_visible_grid(grid):
     visible_grid = []
     for row in grid:
@@ -151,6 +157,8 @@ def create_visible_grid(grid):
         for cell in row:
             if 'c' in str(cell):
                 visible_row.append(str(cell).replace('c', ''))
+            elif "f" in str(cell):
+                visible_row.append("f")
             elif isinstance(cell, int):
                 visible_row.append('.')
             else:
@@ -164,17 +172,25 @@ num_x = 6
 grid = createMap(size, num_x)
 add_numbers(grid)
 
+for row in grid:
+    print(row)
+
 while True:
     visible_grid = create_visible_grid(grid)
     for row in visible_grid:
         print(row)
     print("")
+    
     input_x = int(input("x:"))
     input_y = int(input("y:"))
     
-    if is_bomb(grid, input_x, input_y):
-        print("Du förlorade")
-        break
-    else:
-        clear(grid, input_x, input_y)
-        remove_d(grid)
+    mode = int(input("0: Clicka, 1: Flagga"))
+    if mode == 0:
+        if is_bomb(grid, input_x, input_y):
+            print("Du förlorade")
+            break
+        else:
+            clear(grid, input_x, input_y)
+            remove_d(grid)
+    elif mode == 1:
+        flag(grid, input_x, input_y)
