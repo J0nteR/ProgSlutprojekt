@@ -15,9 +15,10 @@ def is_bomb(grid, user_input_x, user_input_y):
     if grid[user_input_y][user_input_x] == "x":
         return True
     else:
-        grid[user_input_y][user_input_x] = str(grid[user_input_y][user_input_x])
-        grid[user_input_y][user_input_x] += "c"
-        return False
+        if "f" not in str(grid[user_input_y][user_input_x]):
+            grid[user_input_y][user_input_x] = str(grid[user_input_y][user_input_x])
+            grid[user_input_y][user_input_x] += "c"
+            return False
 
 
 

@@ -12,7 +12,7 @@ def clear_around(grid, pos_x, pos_y):
             
             grid[y][x] = str(grid[y][x])
             if "c" not in grid[y][x]:
-                grid[y][x] += "c"
+                grid[y][x] = grid[y][x][0]+"c"
             
             x += 1
             if x > len(grid[0])-1:

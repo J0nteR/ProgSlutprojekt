@@ -1,16 +1,21 @@
 import pygame
 import random
 import sys
+import time
 
 # Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (192, 192, 192)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+PURPLE = (128, 0, 128)
+
 
 # Define constants
-SIZE = 8
-NUM_X = 10
+SIZE = 4
+NUM_X = 1
 CELL_SIZE = 40
 MARGIN = 5
 WIDTH = SIZE * (CELL_SIZE + MARGIN) + MARGIN
@@ -67,7 +72,6 @@ def add_numbers(grid):
     
     return grid
 
-
 def is_bomb(grid, user_input_x, user_input_y):
     if user_input_x > len(grid[0])-1:
         message = f"user_input_x cannot exceed the length of the array rows. user_input_x = {user_input_x}, length of array rows = {len(grid[0])-1}"
@@ -79,9 +83,10 @@ def is_bomb(grid, user_input_x, user_input_y):
     if grid[user_input_y][user_input_x] == "x":
         return True
     else:
-        grid[user_input_y][user_input_x] = str(grid[user_input_y][user_input_x])
-        grid[user_input_y][user_input_x] += "c"
-        return False
+        if "f" not in str(grid[user_input_y][user_input_x]):
+            grid[user_input_y][user_input_x] = str(grid[user_input_y][user_input_x])
+            grid[user_input_y][user_input_x] += "c"
+            return False
 
 def clear_around(grid, pos_x, pos_y):
     y = pos_y-1
@@ -96,7 +101,7 @@ def clear_around(grid, pos_x, pos_y):
         while x <= pos_x+1:
             grid[y][x] = str(grid[y][x])
             if "c" not in grid[y][x]:
-                grid[y][x] += "c"
+                grid[y][x] = grid[y][x][0]+"c"
             
             x += 1
             if x > len(grid[0])-1:
@@ -152,39 +157,49 @@ def flag(grid, pos_x, pos_y):
     elif "c" not in grid[pos_y][pos_x]:
         grid[pos_y][pos_x] += "f"
 
-def create_visible_grid(grid):
-    visible_grid = []
+def won(grid):
+    flagged = True
+    cleared = True
     for row in grid:
-        visible_row = []
         for cell in row:
-            if 'c' in str(cell):
-                visible_row.append(str(cell).replace('c', ''))
-            elif "f" in str(cell):
-                visible_row.append("f")
-            elif isinstance(cell, int):
-                visible_row.append('.')
-            else:
-                visible_row.append('.')
-        visible_grid.append(visible_row)
-    return visible_grid
+            if cell == "x":
+                flagged = False
+            elif "x" not in str(cell) and "c" not in str(cell):
+                cleared = False
+    return flagged and cleared
 
 # Frontend functions
+def draw_square(color, column, row):
+    pygame.draw.rect(screen, color, [(MARGIN + CELL_SIZE) * column + MARGIN,
+                                    (MARGIN + CELL_SIZE) * row + MARGIN,
+                                    CELL_SIZE, CELL_SIZE])
+
+def draw_num(grid, column, row):
+    font = pygame.font.Font(None, 36)
+    if str(grid[row][column][0]) == "1":
+        text = font.render("1", True, BLUE)
+    elif str(grid[row][column][0]) == "2":
+        text = font.render("2", True, GREEN)
+    elif str(grid[row][column][0]) == "3":
+        text = font.render("3", True, RED)
+    else:
+        text = font.render(str(grid[row][column][0]), True, PURPLE)
+        
+    text_rect = text.get_rect(center=((MARGIN + CELL_SIZE) * column + MARGIN + CELL_SIZE / 2,
+                                        (MARGIN + CELL_SIZE) * row + MARGIN + CELL_SIZE / 2))
+    screen.blit(text, text_rect)
+
 def draw_grid(grid):
     for row in range(SIZE):
         for column in range(SIZE):
-            color = WHITE
             if "c" not in str(grid[row][column]) and "f" not in str(grid[row][column]):
-                pygame.draw.rect(screen, color, [(MARGIN + CELL_SIZE) * column + MARGIN,
-                                                (MARGIN + CELL_SIZE) * row + MARGIN,
-                                                CELL_SIZE, CELL_SIZE])
+                draw_square(WHITE, column, row)
             elif "c" in grid[row][column]:
-                font = pygame.font.Font(None, 36)
-                text = font.render(str(grid[row][column][0]), True, BLACK)  # Access grid[row][column] directly
-                text_rect = text.get_rect(center=((MARGIN + CELL_SIZE) * column + MARGIN + CELL_SIZE / 2,
-                                                  (MARGIN + CELL_SIZE) * row + MARGIN + CELL_SIZE / 2))
-                screen.blit(text, text_rect)
+                if "0" in grid[row][column]:
+                    draw_square(GRAY, column, row)
+                else:
+                    draw_num(grid, column, row)
             elif "f" in grid[row][column]:
-                print("hej")
                 font = pygame.font.Font(None, 36)
                 text = font.render("f", True, BLACK)  # Access grid[row][column] directly
                 text_rect = text.get_rect(center=((MARGIN + CELL_SIZE) * column + MARGIN + CELL_SIZE / 2,
@@ -207,9 +222,8 @@ def main():
     pygame.display.flip()
 
     # Game loop
+    start_time = time.time()
     while True:
-    
-        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -231,6 +245,18 @@ def main():
                     print(row)
                 draw_grid(backend_grid)
                 pygame.display.flip()
+                
+                if won(backend_grid):
+                    end_time = time.time()
+                    print(end_time-start_time)
+                    start_time = end_time
+                    
+                    backend_grid = createMap(SIZE, NUM_X)
+                    add_numbers(backend_grid)
+
+                    screen.fill(BLACK)
+                    draw_grid(backend_grid)
+                    pygame.display.flip()
    
 
 
