@@ -14,8 +14,8 @@ PURPLE = (128, 0, 128)
 
 
 # Define constants
-SIZE = 15
-NUM_X = 1
+SIZE = 12
+NUM_X = 20
 CELL_SIZE = 40
 MARGIN = 5
 HEADER_HEIGHT = 50
