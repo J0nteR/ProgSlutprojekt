@@ -86,7 +86,7 @@ def main_menu():
                     # Leaderboard
                     # Add your code to show leaderboard here
                     print("Showing leaderboard...")
-                elif quit_rect.collidepoint(mouse_pos):
+                elif quit_rect.collidepoint(mouse_pos):                           
                     pygame.quit()
                     sys.exit()
 
