@@ -3,7 +3,6 @@ import random
 import sys
 import time
 
-# Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (192, 192, 192)
@@ -13,9 +12,8 @@ GREEN = (0, 255, 0)
 PURPLE = (128, 0, 128)
 
 
-# Define constants
-SIZE = 12
-NUM_X = 20
+SIZE = 5
+NUM_X = 2
 CELL_SIZE = 40
 MARGIN = 5
 HEADER_HEIGHT = 50
@@ -24,7 +22,29 @@ HEIGHT = SIZE * (CELL_SIZE + MARGIN) + MARGIN + HEADER_HEIGHT
 BUTTON_CENTRE = (WIDTH/2, HEADER_HEIGHT-30)
 BUTTON_RADIUS = 20
 
-# Initialize Pygame
+tile_unknown = pygame.image.load('Amain/assets/TileUnknown.png')
+tile_unknown = pygame.transform.scale(tile_unknown, (CELL_SIZE, CELL_SIZE))
+
+tile_empty = pygame.image.load('Amain/assets/TileEmpty.png')
+tile_empty = pygame.transform.scale(tile_empty, (CELL_SIZE, CELL_SIZE))
+
+tile_exploded = pygame.image.load('Amain/assets/TileExploded.png') 
+tile_exploded = pygame.transform.scale(tile_exploded, (CELL_SIZE, CELL_SIZE))
+
+tile_flag = pygame.image.load('Amain/assets/TileFlag.png') 
+tile_flag = pygame.transform.scale(tile_flag, (CELL_SIZE, CELL_SIZE))
+
+tile_mine = pygame.image.load('Amain/assets/TileMine.png') 
+tile_mine = pygame.transform.scale(tile_mine, (CELL_SIZE, CELL_SIZE))
+
+tile_not_mine = pygame.image.load('Amain/assets/TileNotMine.png') 
+tile_not_mine = pygame.transform.scale(tile_not_mine, (CELL_SIZE, CELL_SIZE))
+
+tile_imgs = [pygame.image.load(f'Amain/assets/Tile{i}.png') for i in range(1, 8)]
+for i in range(1,8):
+    tile_imgs[i-1] = pygame.transform.scale(tile_imgs[i-1], (CELL_SIZE, CELL_SIZE))
+
+
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Minesweeper")
@@ -103,7 +123,7 @@ def clear_around(grid, pos_x, pos_y):
          
         while x <= pos_x+1:
             grid[y][x] = str(grid[y][x])
-            if "c" not in grid[y][x]:
+            if "c" not in grid[y][x] and "f" not in grid[y][x]:
                 grid[y][x] = grid[y][x][0]+"c"
             
             x += 1
@@ -175,44 +195,44 @@ def won(grid):
     return flagged and cleared
 
 # Frontend functions
-def draw_square(color, column, row):
-    pygame.draw.rect(screen, color, [(MARGIN + CELL_SIZE) * column + MARGIN,
-                                    (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT,
-                                    CELL_SIZE, CELL_SIZE])
+def draw_square(tile, column, row):
+    if tile == "empty":
+        img = tile_empty
+    elif tile == "unknown":
+        img = tile_unknown
+    screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
+                                            (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
 def draw_num(grid, column, row):
-    font = pygame.font.Font(None, 36)
-    if str(grid[row][column][0]) == "1":
-        text = font.render("1", True, BLUE)
-    elif str(grid[row][column][0]) == "2":
-        text = font.render("2", True, GREEN)
-    elif str(grid[row][column][0]) == "3":
-        text = font.render("3", True, RED)
-    elif str(grid[row][column][0]) == "x":
-        text = font.render("x", True, BLACK)
-    else:
-        text = font.render(str(grid[row][column][0]), True, PURPLE)
-        
-    text_rect = text.get_rect(center=((MARGIN + CELL_SIZE) * column + MARGIN + CELL_SIZE / 2,
-                                        (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT + CELL_SIZE / 2))
-    screen.blit(text, text_rect)
+    img = tile_imgs[int(grid[row][column][0])-1]
+    
+    screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
+                                            (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
+
+def draw_flag(column, row):
+    img = tile_flag
+    
+    screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
+                                            (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
 def draw_grid(grid):
     for row in range(SIZE):
         for column in range(SIZE):
-            if "c" not in str(grid[row][column]) and "f" not in str(grid[row][column]):
-                draw_square(WHITE, column, row)
+            if grid[row][column] == "xp":
+                screen.blit(tile_exploded, ((MARGIN + CELL_SIZE) * column + MARGIN,
+                                            (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
+            elif grid[row][column] == "xc":
+                screen.blit(tile_mine, ((MARGIN + CELL_SIZE) * column + MARGIN,
+                                            (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
+            elif "c" not in str(grid[row][column]) and "f" not in str(grid[row][column]):
+                draw_square("unknown", column, row)
             elif "c" in grid[row][column]:
                 if "0" in grid[row][column]:
-                    draw_square(GRAY, column, row)
+                    draw_square("empty", column, row)
                 else:
                     draw_num(grid, column, row)
             elif "f" in grid[row][column]:
-                font = pygame.font.Font(None, 36)
-                text = font.render("f", True, BLACK)  # Access grid[row][column] directly
-                text_rect = text.get_rect(center=((MARGIN + CELL_SIZE) * column + MARGIN + CELL_SIZE / 2,
-                                                  (MARGIN + CELL_SIZE) * row + HEADER_HEIGHT + MARGIN + CELL_SIZE / 2))
-                screen.blit(text, text_rect)
+                draw_flag(column, row)
     pygame.display.flip()
 
 def draw_header(elapsed_time, flags_left):
@@ -242,11 +262,12 @@ def animate_header_button():
     pygame.draw.circle(screen, (255,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
     pygame.display.flip()
 
-def lose(grid):
-    for row in range(SIZE):
-        for column in range(SIZE):
-            if grid[row][column] == "x":
-                grid[row][column] = "xc"  # Reveal all mines
+def lose(grid, column, row):
+    for row_tmp in range(SIZE):
+        for column_tmp in range(SIZE):
+            if grid[row_tmp][column_tmp] == "x":
+                grid[row_tmp][column_tmp] = "xc"  # Reveal all mines
+    grid[row][column] = "xp"
     draw_grid(grid)  # Update the grid display
     pygame.display.flip()
     
@@ -276,25 +297,41 @@ def win():
     draw_grid(backend_grid)
     return backend_grid
 
+def save_time(name, game_time):
+    game_time = "{:.3f}".format(game_time)
+    
+    with open('highscores.txt', 'r') as file:
+        scores = file.readlines()
+        
+    scores.append(name + ": " + game_time + '\n')
+    
+    scores.sort(key=lambda x: float(x.split(': ')[1]))
+    
+    with open('highscores.txt', 'w') as file:
+        file.writelines(scores)
+
 def main():
-    # Create backend grid
     backend_grid = createMap(SIZE, NUM_X)
     add_numbers(backend_grid)
     
     for row in backend_grid:
             print(row)
             
-    # Draw grid
     screen.fill(BLACK)
     draw_grid(backend_grid)
 
     
     flags_left = NUM_X
-    start_time = time.time()
+    start_time = 0
+    first_press = True
     draw_header(start_time, flags_left)
+    
     # Game loop
     while True:
-        elapsed_time = time.time()-start_time
+        if not first_press:
+            elapsed_time = time.time()-start_time
+        else:
+            elapsed_time = 0
         draw_header(elapsed_time, flags_left)
         
         for event in pygame.event.get():
@@ -302,6 +339,9 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                if first_press:
+                    start_time = time.time()
+                    first_press = False
                 pos = pygame.mouse.get_pos()
                 if pos[1] > HEADER_HEIGHT:
                     column = pos[0] // (CELL_SIZE + MARGIN)
@@ -309,10 +349,10 @@ def main():
                 
                     if event.button == 1:
                         if is_bomb(backend_grid, column, row):
-                            lose(backend_grid)  # Player loses
+                            lose(backend_grid, column, row)  # Player loses
                             backend_grid = createMap(SIZE, NUM_X)  # Reset the game
                             add_numbers(backend_grid)
-                            start_time = time.time()  # Reset the timer
+                            first_press = True  # Reset the timer
                             flags_left = NUM_X
                         else:
                             clear(backend_grid, column, row)
@@ -328,10 +368,15 @@ def main():
                     draw_grid(backend_grid)
                     
                     if won(backend_grid):
+                        draw_header(elapsed_time, flags_left)
+                        
                         end_time = time.time()
-                        print(end_time-start_time)
+                        game_time = end_time-start_time
+                        save_time("user", game_time)
+
+                        flags_left = NUM_X
                         backend_grid = win()
-                        start_time = time.time()
+                        first_press = True
                 elif (pos[0] - BUTTON_CENTRE[0])**2 + (pos[1] - BUTTON_CENTRE[1])**2 <= BUTTON_RADIUS**2:
                     animate_header_button()
                     backend_grid = createMap(SIZE, NUM_X)

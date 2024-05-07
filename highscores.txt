@@ -1,0 +1,10 @@
+user: 2.883
+user: 3.318
+user: 5.057
+user: 5.540
+user: 7.226
+user: 7.374
+user: 7.985
+user: 9.456
+user: 12.216
+user: 12.350
