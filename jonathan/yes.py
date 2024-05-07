@@ -515,6 +515,7 @@ def main_menu():
                     leaderboard_button = pygame.Rect(SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, 450, BUTTON_WIDTH, BUTTON_HEIGHT)
                     if leaderboard_button.collidepoint(mouse_pos):
                         härgörvinått = 0
+                        show_leaderboard()
                     # Check if quit button clicked
                     quit_button = pygame.Rect(SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, 550, BUTTON_WIDTH, BUTTON_HEIGHT)
                     if quit_button.collidepoint(mouse_pos):
@@ -585,6 +586,7 @@ def show_leaderboard():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 if menu_rect.collidepoint(mouse_pos):
+                    main()
                     # Return to main menu
                     #Lägg till så man går till menyn
                     print("Starting game...")               
@@ -592,6 +594,8 @@ def show_leaderboard():
         pygame.display.update()
 
     
-
-size, difficulty = main_menu()
-game(size, difficulty)
+def main():
+    size, difficulty = main_menu()
+    game(size, difficulty)
+    
+main()
