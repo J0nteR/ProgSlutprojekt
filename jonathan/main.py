@@ -6,7 +6,7 @@ import time
 # Initialize Pygame
 pygame.init()
 
-def game(size, difficulty):
+def game(size, difficulty, name):
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
 
@@ -407,7 +407,7 @@ def game(size, difficulty):
                             
                             end_time = time.time()
                             game_time = end_time-start_time
-                            save_time("user", game_time, size, difficulty)
+                            save_time(name, game_time, size, difficulty)
 
                             flags_left = NUM_X
                             backend_grid = win()
@@ -464,6 +464,9 @@ def main_menu():
     def main_menu_loop():
         size = "Medium"
         difficulty = "Medium"
+        input_font = pygame.font.Font(None, 24)
+        name = ""
+        no_name = WHITE
         while True:
             screen.fill(WHITE)
             
@@ -487,6 +490,17 @@ def main_menu():
             draw_button(screen, RED if difficulty == "Easy" else GRAY, SCREEN_WIDTH / 2 - 350, 250, BUTTON_WIDTH, BUTTON_HEIGHT, "Easy")
             draw_button(screen, RED if difficulty == "Medium" else GRAY, SCREEN_WIDTH / 2 - 100, 250, BUTTON_WIDTH, BUTTON_HEIGHT, "Medium")
             draw_button(screen, RED if difficulty == "Hard" else GRAY, SCREEN_WIDTH / 2 + 150, 250, BUTTON_WIDTH, BUTTON_HEIGHT, "Hard")
+
+            #Box to enter name
+            input_text = input_font.render("Enter your name:", True, BLACK, no_name)
+            input_rect = input_text.get_rect(topleft=(50, 100))
+            screen.blit(input_text, input_rect)
+
+            name_text = input_font.render(name, True, BLACK)
+            name_rect = name_text.get_rect(topleft=(50, 130))
+            pygame.draw.rect(screen, WHITE, name_rect, 2)
+            screen.blit(name_text, name_rect)
+
 
             # Draw button to start game
             draw_button(screen, GRAY, SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, 350, BUTTON_WIDTH, BUTTON_HEIGHT, "Start Game")
@@ -531,10 +545,14 @@ def main_menu():
                     # Check if start game button clicked
                     start_game_button = pygame.Rect(SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, 350, BUTTON_WIDTH, BUTTON_HEIGHT)
                     if start_game_button.collidepoint(mouse_pos):
-                        if size is not None and difficulty is not None:
+                        if size is not None and difficulty is not None and name != "":
                             print("Starting game with size:", size, "and difficulty:", difficulty)
-                            return size, difficulty
+                            return size, difficulty, name
                             # Call your game start function here with size and difficulty as parameters
+                        elif name == "":
+                            no_name = RED
+                            
+                            
                     # Check if leaderboard button clicked
                     leaderboard_button = pygame.Rect(SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, 450, BUTTON_WIDTH, BUTTON_HEIGHT)
                     if leaderboard_button.collidepoint(mouse_pos):
@@ -545,6 +563,16 @@ def main_menu():
                     if quit_button.collidepoint(mouse_pos):
                         pygame.quit()
                         sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_BACKSPACE:
+                        name = name[:-1]
+                    elif event.key == pygame.K_RETURN:
+                        if size is not None and difficulty is not None and name != "":
+                            return size, difficulty, name
+                        elif name == "":
+                            no_name = RED
+                    else:
+                        name += event.unicode
             
             pygame.display.flip()
 
@@ -615,7 +643,7 @@ def show_leaderboard(size, difficulty):
         pygame.display.update()
 
 def main():
-    size, difficulty = main_menu()
-    game(size, difficulty)
+    size, difficulty, name = main_menu()
+    game(size, difficulty, name)
     
 main()
