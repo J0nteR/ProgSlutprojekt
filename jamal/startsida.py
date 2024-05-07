@@ -1,62 +1,84 @@
+import pygame 
 import pygame
 import sys
-sys.path.append(jonathan\createMap.py)
-                import createMap
-                
-pygame.init()
-size = 4
-num_x = 10
-screen_width = 1000
-screen_height = 700
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Minesweeper')
 
+# Initialize pygame
+pygame.init()
+
+# svårhetsgrad
+
+
+# Set up display
 WIDTH, HEIGHT = 800, 600
-GRID_SIZE = 10
-TILE_SIZE = WIDTH // GRID_SIZE
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Game Main Menu")
 
 # Colors
 WHITE = (255, 255, 255)
-GRAY = (200, 200, 200)
-RED = (255, 0, 0)
+BLACK = (0, 0, 0)
 
-def createMap(size, num_x):
-    grid = [[0 for _ in range(size)] for _ in range(size)] 
-    coordinates = [(i, j) for i in range(size) for j in range(size)]
-    random.shuffle(coordinates)
-    for i in range(num_x):
-        x, y = coordinates[i]
-        grid[x][y] = 'x'  
-    return grid
+# Fonts
+font = pygame.font.SysFont(None, 30)
 
+def draw_text(text, font, color, surface, x, y):
+    text_obj = font.render(text, True, color)
+    text_rect = text_obj.get_rect()
+    text_rect.center = (x, y)
+    surface.blit(text_obj, text_rect)
 
-def draw_board(board):
-    for row in(GRID_SIZE):
-        for col in range(GRID_SIZE):
-            tile = board[row][col]
-            color = white if tile == 0 else gray
-            pygame.draw.rect(screen, color, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE))
-            if tile == "x":  # Mine
-                pygame.draw.circle(screen, RED, (col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2), TILE_SIZE // 4)
-
-
-def main():
-    board = create_board()
-    place_mines(board, num_x)
-    running = True
-    
-    while running:
-    
-        for event in pygame.event.get():
+def main_menu():
+    while True:
+        screen.fill(WHITE)
+        draw_text('Main Menu', font, BLACK, screen, WIDTH // 2, HEIGHT // 8)
         
+        # Start Game button
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('Start Game', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+        
+        # Leaderboard button
+        leaderboard_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 50, 200, 50)
+        pygame.draw.rect(screen, BLACK, leaderboard_rect)
+        draw_text('Leaderboard', font, WHITE, screen, WIDTH // 2 , HEIGHT // 2 + 65)
+        
+        # Quit button
+        quit_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 150, 200, 50)
+        pygame.draw.rect(screen, BLACK, quit_rect)
+        draw_text('Quit', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + 170)
+
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('easy mode', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('medium mode', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('hard morde', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+
+
+        
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            quit()
-    #draw_board
-    draw_board(board)
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if start_rect.collidepoint(mouse_pos):
+                    # Start game
+                    # Add your code to start the game here
+                    print("Starting game...")
+                elif leaderboard_rect.collidepoint(mouse_pos):
+                    # Leaderboard
+                    # Add your code to show leaderboard here
+                    print("Showing leaderboard...")
+                elif quit_rect.collidepoint(mouse_pos):
+                    pygame.quit()
+                    sys.exit()
 
-    #update display
-    pygame.dispay.flip()
-    
+        pygame.display.update()
 
-    pygame.display.update()
+if __name__ == "__main__":
+    main_menu()
