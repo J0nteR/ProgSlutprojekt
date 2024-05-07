@@ -1,40 +1,62 @@
 import pygame
+import sys
+sys.path.append(jonathan\createMap.py)
+                import createMap
+                
 pygame.init()
-
-screen_width = 750
-screen_height = 450
+size = 4
+num_x = 10
+screen_width = 1000
+screen_height = 700
 screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption('Minesweeper')
 
-obstacle_x = 400
-obstacle_y = 400
-obstacle_width = 40
-obstacle_height = 40
-player_x = 200
-player_y = 400
-player_width = 20
-player_height = 20
+WIDTH, HEIGHT = 800, 600
+GRID_SIZE = 10
+TILE_SIZE = WIDTH // GRID_SIZE
 
-while True:
+# Colors
+WHITE = (255, 255, 255)
+GRAY = (200, 200, 200)
+RED = (255, 0, 0)
+
+def createMap(size, num_x):
+    grid = [[0 for _ in range(size)] for _ in range(size)] 
+    coordinates = [(i, j) for i in range(size) for j in range(size)]
+    random.shuffle(coordinates)
+    for i in range(num_x):
+        x, y = coordinates[i]
+        grid[x][y] = 'x'  
+    return grid
+
+
+def draw_board(board):
+    for row in(GRID_SIZE):
+        for col in range(GRID_SIZE):
+            tile = board[row][col]
+            color = white if tile == 0 else gray
+            pygame.draw.rect(screen, color, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE))
+            if tile == "x":  # Mine
+                pygame.draw.circle(screen, RED, (col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2), TILE_SIZE // 4)
+
+
+def main():
+    board = create_board()
+    place_mines(board, num_x)
+    running = True
     
-    for event in pygame.event.get():
+    while running:
+    
+        for event in pygame.event.get():
         
-        if event.type == pygame.QUIT:
-            pygame.quit()
+            if event.type == pygame.QUIT:
+                pygame.quit()
             quit()
+    #draw_board
+    draw_board(board)
 
+    #update display
+    pygame.dispay.flip()
     
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        player_x -= 5
-    if keys[pygame.K_RIGHT]:
-        player_x += 5
 
-   
-    if player_x + player_width > obstacle_x and player_x < obstacle_x + obstacle_width and player_y + player_height > obstacle_y and player_y < obstacle_y + obstacle_height:
-        game_over = True
-
-    
-    screen.fill((0, 0, 0))
-    pygame.draw.rect(screen, (255, 0, 0), (obstacle_x, obstacle_y, obstacle_width, obstacle_height))
-    pygame.draw.rect(screen, (0, 255, 0), (player_x, player_y, player_width, player_height))
     pygame.display.update()
