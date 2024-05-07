@@ -1,123 +1,117 @@
 import pygame
 import random
+import sys
+import time
+
+# Define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (192, 192, 192)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+PURPLE = (128, 0, 128)
+
+# Define constants
+SIZE = 12
+NUM_X = 20
+CELL_SIZE = 40
+MARGIN = 5
+HEADER_HEIGHT = 50
+WIDTH = SIZE * (CELL_SIZE + MARGIN) + MARGIN
+HEIGHT = SIZE * (CELL_SIZE + MARGIN) + MARGIN + HEADER_HEIGHT
+BUTTON_CENTRE = (WIDTH/2, HEADER_HEIGHT-30)
+BUTTON_RADIUS = 20
+
+# Define difficulty levels
+DIFFICULTIES = {
+    "easy": {"size": 8, "num_mines": 10},
+    "medium": {"size": 12, "num_mines": 20},
+    "hard": {"size": 16, "num_mines": 40}
+}
 
 # Initialize Pygame
 pygame.init()
-
-# Set constants
-WIDTH, HEIGHT = 800, 600
-grid = 10
-TILE_SIZE = WIDTH // grid
-
-# Colors
-WHITE = (255, 255, 255)
-GRAY = (200, 200, 200)
-RED = (255, 0, 0)
-
-# Function to create the game board
-def createMap(size, num_x):
-    """Funktionen skapar en "map" med nollor och x, där x är minorna och 0 inte har minor.
-
-    Args:
-        size (integer): hur stor arrayen/spelplanen ska vara
-            exempel: size = 8 --> skapar en map som är 8x8 rutor
-
-        num_x (integer): hur många minor/x som arrayen ska innehålla
-
-    Returns:
-        map (array): (2 dimentionell) array innehållande ett grid med nollor och x i random ordning
-    """
-    
-    # Create a 2D grid with zeros
-    grid = [[0 for _ in range(size)] for _ in range(size)] 
-     
-    # Create an array of the grid coordinates
-    coordinates = [(i, j) for i in range(size) for j in range(size)]    
-    
-    # Shuffle the coordinates
-    random.shuffle(coordinates)
-        
-    # Place 'x' in the shuffled coordinates to num_x
-    for i in range(num_x):
-        x, y = coordinates[i]
-        grid[x][y] = 'x'
-    
-    return grid
-
-
-# Function to place mines randomly on the board
-def add_numbers(grid):
-    mine = "x"
-    row_length = len(grid)
-    column_length = len(grid[0])
-
-    row = 0
-    while row < row_length:
-        cell = 0
-        while cell < column_length:
-            mine_num = 0
-            if grid[row][cell] != mine:
-                if cell != 0 and grid[row][cell-1] == mine:
-                    mine_num += 1
-                if cell != column_length-1 and grid[row][cell+1] == mine:
-                    mine_num += 1
-
-                if row != 0 and cell != 0 and grid[row-1][cell-1] == mine:
-                    mine_num += 1
-                if row != 0 and grid[row-1][cell] == mine:
-                    mine_num += 1
-                if row != 0 and cell != column_length-1 and grid[row-1][cell+1] == mine:
-                    mine_num += 1
-
-                if row != row_length-1 and cell != 0 and grid[row+1][cell-1] == mine:
-                    mine_num += 1
-                if row != row_length-1 and grid[row+1][cell] == mine:
-                    mine_num += 1
-                if row != row_length-1 and cell != column_length-1 and grid[row+1][cell+1] == mine:
-                    mine_num += 1
-
-                grid[row][cell] = mine_num
-            cell += 1
-        row += 1
-    
-    return grid
-# Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Minesweeper')
+pygame.display.set_caption("Minesweeper")
 
-# Function to create the game board
+# Main menu variables
+menu_font = pygame.font.Font(None, 36)
+input_font = pygame.font.Font(None, 24)
+player_name = ""
 
+def draw_main_menu():
+    screen.fill(WHITE)
+    menu_text = menu_font.render("Minesweeper", True, BLACK)
+    menu_rect = menu_text.get_rect(center=(WIDTH/2, HEADER_HEIGHT/2))
+    screen.blit(menu_text, menu_rect)
 
+    # Draw difficulty selection buttons
+    easy_button = pygame.Rect(100, 150, 200, 50)
+    medium_button = pygame.Rect(100, 210, 200, 50)
+    hard_button = pygame.Rect(100, 270, 200, 50)
+    pygame.draw.rect(screen, BLACK, easy_button)
+    pygame.draw.rect(screen, BLACK, medium_button)
+    pygame.draw.rect(screen, BLACK, hard_button)
 
+    easy_text = menu_font.render("Easy", True, WHITE)
+    medium_text = menu_font.render("Medium", True, WHITE)
+    hard_text = menu_font.render("Hard", True, WHITE)
+    screen.blit(easy_text, (150, 165))
+    screen.blit(medium_text, (140, 225))
+    screen.blit(hard_text, (150, 285))
 
-  
+    # Player name input
+    input_text = input_font.render("Enter your name:", True, BLACK)
+    input_rect = input_text.get_rect(topleft=(50, 100))
+    screen.blit(input_text, input_rect)
 
-# Function to draw the board
-def draw_board(board):
-    
-    
-   
-# Main function
-def main():
-  
+    name_text = input_font.render(player_name, True, BLACK)
+    name_rect = name_text.get_rect(topleft=(50, 130))
+    pygame.draw.rect(screen, BLACK, name_rect, 2)
+    screen.blit(name_text, name_rect)
 
-    running = True
-    while running:
+    pygame.display.flip()
+
+def main_menu():
+    global player_name
+    draw_main_menu()
+
+    # Define buttons here
+    easy_button = pygame.Rect(100, 150, 200, 50)
+    medium_button = pygame.Rect(100, 210, 200, 50)
+    hard_button = pygame.Rect(100, 270, 200, 50)
+
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if easy_button.collidepoint(pos):
+                    start_game("easy")
+                elif medium_button.collidepoint(pos):
+                    start_game("medium")
+                elif hard_button.collidepoint(pos):
+                    start_game("hard")
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    player_name = player_name[:-1]
+                elif event.key == pygame.K_RETURN:
+                    start_game("medium")  # Default to medium difficulty if no button clicked
+                else:
+                    player_name += event.unicode
+                draw_main_menu()
+        draw_main_menu()  # Added to update the menu continuously
 
-        # Draw the board
-        draw_board(board)
+def start_game(difficulty):
+    global player_name
+    size = DIFFICULTIES[difficulty]["size"]
+    num_mines = DIFFICULTIES[difficulty]["num_mines"]
 
-        # Update the display
-        pygame.display.flip()
-
-    pygame.quit()
+    # Your game initialization code here
+    print(f"Starting game with difficulty: {difficulty}, grid size: {size}, mines: {num_mines}, and player name: {player_name}")
 
 if __name__ == "__main__":
-    main()
-
-
-
-    
+    main_menu()
