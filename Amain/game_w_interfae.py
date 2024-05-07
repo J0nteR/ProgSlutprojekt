@@ -224,7 +224,7 @@ def draw_grid(grid):
             elif grid[row][column] == "xc":
                 screen.blit(tile_mine, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                             (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
-            elif "c" not in str(grid[row][column]) and "f" not in str(grid[row][column]):
+            elif "c" not in str(grid[row][column]) and "f" not in str(grid[row][column]) and "w" not in str(grid[row][column]):
                 draw_square("unknown", column, row)
             elif "c" in grid[row][column]:
                 if "0" in grid[row][column]:
@@ -233,6 +233,9 @@ def draw_grid(grid):
                     draw_num(grid, column, row)
             elif "f" in grid[row][column]:
                 draw_flag(column, row)
+            elif "w" == grid[row][column]:
+                screen.blit(tile_not_mine, ((MARGIN + CELL_SIZE) * column + MARGIN,
+                                            (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
     pygame.display.flip()
 
 def draw_header(elapsed_time, flags_left):
@@ -267,6 +270,8 @@ def lose(grid, column, row):
         for column_tmp in range(SIZE):
             if grid[row_tmp][column_tmp] == "x":
                 grid[row_tmp][column_tmp] = "xc"  # Reveal all mines
+            elif "f" in str(grid[row_tmp][column_tmp]) and "x" not in str(grid[row_tmp][column_tmp]): #DETTA OCH NEDANFÖR FANNS INTE INNAN
+                grid[row_tmp][column_tmp] = "w"
     grid[row][column] = "xp"
     draw_grid(grid)  # Update the grid display
     pygame.display.flip()
@@ -316,6 +321,7 @@ def main():
     
     for row in backend_grid:
             print(row)
+    
             
     screen.fill(BLACK)
     draw_grid(backend_grid)
@@ -328,6 +334,7 @@ def main():
     
     # Game loop
     while True:
+        
         if not first_press:
             elapsed_time = time.time()-start_time
         else:
@@ -360,10 +367,7 @@ def main():
                     elif event.button == 3:
                         flags_left = flag(backend_grid, column, row, flags_left)
                         
-                        
-                    print("")
-                    for row in backend_grid:
-                        print(row)
+
                     
                     draw_grid(backend_grid)
                     
