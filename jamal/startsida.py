@@ -32,9 +32,9 @@ def main_menu():
         draw_text('Main Menu', font, BLACK, screen, WIDTH // 2, HEIGHT // 8)
         
         # Start Game button
-        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 4 - 50, 200, 50)
         pygame.draw.rect(screen, BLACK, start_rect)
-        draw_text('Start Game', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+        draw_text('Start Game', font, WHITE, screen, WIDTH // 2, HEIGHT // 5)
         
         # Leaderboard button
         leaderboard_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 50, 200, 50)
@@ -46,17 +46,29 @@ def main_menu():
         pygame.draw.rect(screen, BLACK, quit_rect)
         draw_text('Quit', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + 170)
 
-        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        start_rect = pygame.Rect(WIDTH // 2 - 325 , HEIGHT // 3 - 20 , 200, 50)
         pygame.draw.rect(screen, BLACK, start_rect)
-        draw_text('easy mode', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+        draw_text('easy mode', font, WHITE, screen, WIDTH // 3 -100, HEIGHT // 3)
 
-        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 3 - 20, 200, 50)
         pygame.draw.rect(screen, BLACK, start_rect)
-        draw_text('medium mode', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+        draw_text('medium mode', font, WHITE, screen, WIDTH // 2, HEIGHT // 3)
 
-        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+        start_rect = pygame.Rect(WIDTH // 2 + 150, HEIGHT // 3 -20, 200, 50)
         pygame.draw.rect(screen, BLACK, start_rect)
-        draw_text('hard morde', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + -30)
+        draw_text('hard morde', font, WHITE, screen, WIDTH // 2 + 250, HEIGHT // 3 )
+
+        start_rect = pygame.Rect(WIDTH // 2 - 325 , HEIGHT // 3 - 20 , 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('small', font, WHITE, screen, WIDTH // 3 -100, HEIGHT // 3)
+
+        start_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 3 - 20, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('medium', font, WHITE, screen, WIDTH // 2, HEIGHT // 3)
+
+        start_rect = pygame.Rect(WIDTH // 2 + 150, HEIGHT // 3 -20, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_rect)
+        draw_text('big', font, WHITE, screen, WIDTH // 2 + 250, HEIGHT // 3 )
 
 
         
