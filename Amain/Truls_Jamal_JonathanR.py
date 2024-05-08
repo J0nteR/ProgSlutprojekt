@@ -1,3 +1,25 @@
+""" Beskrivning:
+This code implements the Minesweeper game using the Pygame library. Here's an overview of what the code does:
+
+1.Game Settings and Graphics Initialization: The code initializes settings for game size, colors, and graphics.
+It also loads images for different types of routes.
+2.Create and manage the game board: Functions to create the game board and place mines on it are created. There are also functions for laying
+the numbers around mines to indicate how many mines are around each square.
+3.User interaction: The code handles user interaction by letting the player left click
+to reveal a square and right-click to mark a square as a potential mine by flagging.
+4.Game logic: There are functions to control the game logic, such as checking the user
+clicked on a mine and lost, or if all squares except the mines have been revealed and the player wins.
+5.Main Menu and Leaderboard: The code also contains a main menu where the player can select game settings and start the game.
+In addition, there is a leaderboard where the five best times are displayed depending on the game mode.
+6.Error handling and menu handling: There are functions to handle errors, such as checking if the user has entered a valid name and chooses to launch the game without
+to specify all necessary settings. Menu management features allow the player to return to the main menu from other parts of the game.
+
+In summary, the code allows the player to play Minesweeper with different settings and offers a user-friendly interface for interaction.
+
+# Datum:              2024-05-08
+# Namn:               Truls borgvall, Jonathan Rönnäs och Jamal Mohammed
+
+""" 
 import pygame
 import random
 import sys
