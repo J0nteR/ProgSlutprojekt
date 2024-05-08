@@ -1,5 +1,5 @@
 """ Description:
-This code implements the Minesweeper game using the Pygame library. Here's an overview of what the code does:
+We have created the Minesweeper game using the Pygame library. Here's what the code does:
 
 1.Game Settings and Graphics Initialization: The code initializes settings for game size, colors, and graphics.
 It also loads images for different types of routes.
@@ -93,7 +93,11 @@ def game(size, difficulty, name):
     pygame.display.set_caption("Minesweeper")
 
     # Backend functions:
-    # Generates the game grid with randomly placed mines.
+    
+    # Description: Generates the game grid with randomly placed mines.
+    # Argument 1: int - Size of the grid
+    # Argument 2: int - Number of mines
+    # Return: list of lists - The generated game grid
     def createMap(size, mines):
         grid = [[0 for _ in range(size)] for _ in range(size)]
         coordinates = [(i, j) for i in range(size) for j in range(size)]
@@ -103,7 +107,9 @@ def game(size, difficulty, name):
             grid[x][y] = "x"
         return grid
 
-    # Adds numbers to non-mine cells indicating the number of adjacent mines.
+    # Description: Adds numbers to non-mine cells indicating the number of adjacent mines.
+    # Argument 1: list of lists - The game grid with mines placed
+    # Return: list of lists - The game grid with numbers added
     def add_numbers(grid):
         mine = "x"
         row_length = len(grid)
@@ -140,7 +146,11 @@ def game(size, difficulty, name):
         
         return grid
 
-    # Checks if the selected cell contains a mine.
+    # Description: Checks if the selected cell contains a mine.
+    # Argument 1: list of lists - The game grid
+    # Argument 2: int - The x-coordinate of the selected cell
+    # Argument 3: int - The y-coordinate of the selected cell
+    # Return: bool - True if the cell contains a mine, False otherwise
     def is_bomb(grid, user_input_x, user_input_y):
         if user_input_x > len(grid[0])-1:
             message = f"user_input_x cannot exceed the length of the array rows. user_input_x = {user_input_x}, length of array rows = {len(grid[0])-1}"
@@ -157,7 +167,11 @@ def game(size, difficulty, name):
                 grid[user_input_y][user_input_x] += "c"
                 return False
 
-    # Clears the cells around the selected cell recursively.
+    # Description: Clears the cells around the selected cell recursively.
+    # Argument 1: list of lists - The game grid
+    # Argument 2: int - The x-coordinate of the selected cell
+    # Argument 3: int - The y-coordinate of the selected cell
+    # Return: None
     def clear_around(grid, pos_x, pos_y):
         y = pos_y-1
         if y < 0:
@@ -184,7 +198,11 @@ def game(size, difficulty, name):
         if "d" not in grid[pos_y][pos_x]:
             grid[pos_y][pos_x] += "d"
 
-    # Clears the selected cell and its adjacent cells.
+    # Description: Clears the selected cell and its adjacent cells.
+    # Argument 1: list of lists - The game grid
+    # Argument 2: int - The x-coordinate of the selected cell
+    # Argument 3: int - The y-coordinate of the selected cell
+    # Return: None
     def clear(grid, pos_x, pos_y):
         if grid[pos_y][pos_x] == 0 or grid[pos_y][pos_x] == "0c" or grid[pos_y][pos_x] == "0cd":
             clear_around(grid, pos_x, pos_y)
@@ -211,7 +229,9 @@ def game(size, difficulty, name):
             if y > len(grid)-1:
                 break  
 
-    # Removes the "d" flag used during cell clearing.
+    # Description: Removes the "d" flag used during cell clearing.
+    # Argument 1: list of lists - The game grid
+    # Return: None
     def remove_d(grid):
         for row in grid:
             cell = 0
@@ -220,7 +240,12 @@ def game(size, difficulty, name):
                     row[cell] = row[cell].replace("d", "")
                 cell += 1
 
-    # Flags or unflags a cell.
+    # Description: Flags or unflags a cell.
+    # Argument 1: list of lists - The game grid
+    # Argument 2: int - The x-coordinate of the selected cell
+    # Argument 3: int - The y-coordinate of the selected cell
+    # Argument 4: int - Number of flags left
+    # Return: int - Updated number of flags left
     def flag(grid, pos_x, pos_y, flags_left):
         grid[pos_y][pos_x] = str(grid[pos_y][pos_x])
         
@@ -233,7 +258,9 @@ def game(size, difficulty, name):
             flags_left -= 1
         return flags_left
 
-    # Checks if the game is won.
+    # Description: Checks if the game is won.
+    # Argument 1: list of lists - The game grid
+    # Return: bool - True if the game is won, False otherwise
     def won(grid):
         flagged = True
         cleared = True
@@ -245,7 +272,11 @@ def game(size, difficulty, name):
                     cleared = False
         return flagged and cleared
 
-    # Handles the game over scenario.
+    # Description: Handles the game over scenario.
+    # Argument 1: list of lists - The game grid
+    # Argument 2: int - The x-coordinate of the clicked mine
+    # Argument 3: int - The y-coordinate of the clicked mine
+    # Return: None
     def lose(grid, column, row):
         for row_tmp in range(SIZE):
             for column_tmp in range(SIZE):
@@ -266,7 +297,9 @@ def game(size, difficulty, name):
                         animate_header_button()
                         click = True
 
-    # Handles the win scenario.
+    # Description: Handles the win scenario.
+    # Argument 1: None
+    # Return: list of lists - The new game grid
     def win():
         click = False
         while not click:
@@ -284,7 +317,12 @@ def game(size, difficulty, name):
         draw_grid(grid)
         return grid
 
-    # Saves player's time in a high score file.
+    # Description: Saves player's time in a high score file.
+    # Argument 1: str - The player's name
+    # Argument 2: float - The elapsed time in the game
+    # Argument 3: str - The size of the game grid
+    # Argument 4: str - The difficulty level
+    # Return: None
     def save_time(name, game_time, size, difficulty):
         game_time = "{:.3f}".format(game_time)
         
@@ -300,7 +338,12 @@ def game(size, difficulty, name):
 
 
     # Frontend functions:
-    # Draws a cell on the screen based on its state.
+    
+    # Description: Draws a cell on the screen based on its state.
+    # Argument 1: str - Type of the cell (empty, unknown)
+    # Argument 2: int - The x-coordinate of the cell on the grid
+    # Argument 3: int - The y-coordinate of the cell on the grid
+    # Return: None
     def draw_square(tile, column, row):
         if tile == "empty":
             img = tile_empty
@@ -309,21 +352,30 @@ def game(size, difficulty, name):
         screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
-    # Draws the number of adjacent mines on a cell.
+    # Description: Draws the number of adjacent mines on a cell.
+    # Argument 1: list of lists - The game grid
+    # Argument 2: int - The x-coordinate of the cell on the grid
+    # Argument 3: int - The y-coordinate of the cell on the grid
+    # Return: None
     def draw_num(grid, column, row):
         img = tile_imgs[int(grid[row][column][0])-1]
         
         screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
-    # Draws a flag on a cell.
+    # Description: Draws a flag on a cell.
+    # Argument 1: int - The x-coordinate of the cell on the grid
+    # Argument 2: int - The y-coordinate of the cell on the grid
+    # Return: None
     def draw_flag(column, row):
         img = tile_flag
         
         screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
-    # Draws the entire game grid on the screen.
+    # Description: Draws the entire game grid on the screen.
+    # Argument 1: list of lists - The game grid
+    # Return: None
     def draw_grid(grid):
         for row in range(SIZE):
             for column in range(SIZE):
@@ -347,7 +399,10 @@ def game(size, difficulty, name):
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
         pygame.display.flip()
 
-    # Draws the header displaying elapsed time and remaining flags.
+    # Description: Draws the header displaying elapsed time and remaining flags.
+    # Argument 1: float - The elapsed time in the game
+    # Argument 2: int - Number of flags left
+    # Return: None
     def draw_header(elapsed_time, flags_left):
         screen.fill((255,255,255), pygame.Rect(0, 0, WIDTH, HEADER_HEIGHT))
         pygame.draw.circle(screen, (255,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
@@ -370,7 +425,9 @@ def game(size, difficulty, name):
         
         pygame.display.flip()
 
-    # Animates the button in the header.
+    # Description: Animates the button in the header.
+    # Argument 1: None
+    # Return: None
     def animate_header_button():
         pygame.draw.circle(screen, (139,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
         pygame.display.flip()
@@ -378,7 +435,15 @@ def game(size, difficulty, name):
         pygame.draw.circle(screen, (255,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
         pygame.display.flip()
 
-    # Draws a button on the screen.
+    # Description: Draws a button on the screen.
+    # Argument 1: pygame.Surface - The screen surface
+    # Argument 2: tuple - The color of the button
+    # Argument 3: int - The x-coordinate of the button's top-left corner
+    # Argument 4: int - The y-coordinate of the button's top-left corner
+    # Argument 5: int - The width of the button
+    # Argument 6: int - The height of the button
+    # Argument 7: str - The text displayed on the button
+    # Return: None
     def draw_button(screen, color, x, y, width, height, text, fontsize):
         pygame.draw.rect(screen, color, (x, y, width, height))
         
