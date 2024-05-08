@@ -71,7 +71,8 @@ def game(size, difficulty, name):
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Minesweeper")
 
-    # Backend functions
+    # Backend functions:
+    # Generates the game grid with randomly placed mines.
     def createMap(size, mines):
         grid = [[0 for _ in range(size)] for _ in range(size)]
         coordinates = [(i, j) for i in range(size) for j in range(size)]
@@ -81,6 +82,7 @@ def game(size, difficulty, name):
             grid[x][y] = "x"
         return grid
 
+    # Adds numbers to non-mine cells indicating the number of adjacent mines.
     def add_numbers(grid):
         mine = "x"
         row_length = len(grid)
@@ -117,6 +119,7 @@ def game(size, difficulty, name):
         
         return grid
 
+    # Checks if the selected cell contains a mine.
     def is_bomb(grid, user_input_x, user_input_y):
         if user_input_x > len(grid[0])-1:
             message = f"user_input_x cannot exceed the length of the array rows. user_input_x = {user_input_x}, length of array rows = {len(grid[0])-1}"
@@ -133,6 +136,7 @@ def game(size, difficulty, name):
                 grid[user_input_y][user_input_x] += "c"
                 return False
 
+    # Clears the cells around the selected cell recursively.
     def clear_around(grid, pos_x, pos_y):
         y = pos_y-1
         if y < 0:
@@ -159,6 +163,7 @@ def game(size, difficulty, name):
         if "d" not in grid[pos_y][pos_x]:
             grid[pos_y][pos_x] += "d"
 
+    # Clears the selected cell and its adjacent cells.
     def clear(grid, pos_x, pos_y):
         if grid[pos_y][pos_x] == 0 or grid[pos_y][pos_x] == "0c" or grid[pos_y][pos_x] == "0cd":
             clear_around(grid, pos_x, pos_y)
@@ -185,6 +190,7 @@ def game(size, difficulty, name):
             if y > len(grid)-1:
                 break  
 
+    # Removes the "d" flag used during cell clearing.
     def remove_d(grid):
         for row in grid:
             cell = 0
@@ -193,6 +199,7 @@ def game(size, difficulty, name):
                     row[cell] = row[cell].replace("d", "")
                 cell += 1
 
+    # Flags or unflags a cell.
     def flag(grid, pos_x, pos_y, flags_left):
         grid[pos_y][pos_x] = str(grid[pos_y][pos_x])
         
@@ -205,6 +212,7 @@ def game(size, difficulty, name):
             flags_left -= 1
         return flags_left
 
+    # Checks if the game is won.
     def won(grid):
         flagged = True
         cleared = True
@@ -216,6 +224,7 @@ def game(size, difficulty, name):
                     cleared = False
         return flagged and cleared
 
+    # Handles the game over scenario.
     def lose(grid, column, row):
         for row_tmp in range(SIZE):
             for column_tmp in range(SIZE):
@@ -236,6 +245,7 @@ def game(size, difficulty, name):
                         animate_header_button()
                         click = True
 
+    # Handles the win scenario.
     def win():
         click = False
         while not click:
@@ -253,6 +263,7 @@ def game(size, difficulty, name):
         draw_grid(grid)
         return grid
 
+    # Saves player's time in a high score file.
     def save_time(name, game_time, size, difficulty):
         game_time = "{:.3f}".format(game_time)
         
@@ -267,7 +278,8 @@ def game(size, difficulty, name):
             file.writelines(scores)
 
 
-    # Frontend functions
+    # Frontend functions:
+    # Draws a cell on the screen based on its state.
     def draw_square(tile, column, row):
         if tile == "empty":
             img = tile_empty
@@ -276,18 +288,21 @@ def game(size, difficulty, name):
         screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
+    # Draws the number of adjacent mines on a cell.
     def draw_num(grid, column, row):
         img = tile_imgs[int(grid[row][column][0])-1]
         
         screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
+    # Draws a flag on a cell.
     def draw_flag(column, row):
         img = tile_flag
         
         screen.blit(img, ((MARGIN + CELL_SIZE) * column + MARGIN,
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
 
+    # Draws the entire game grid on the screen.
     def draw_grid(grid):
         for row in range(SIZE):
             for column in range(SIZE):
@@ -311,6 +326,7 @@ def game(size, difficulty, name):
                                                 (MARGIN + CELL_SIZE) * row + MARGIN + HEADER_HEIGHT))
         pygame.display.flip()
 
+    # Draws the header displaying elapsed time and remaining flags.
     def draw_header(elapsed_time, flags_left):
         screen.fill((255,255,255), pygame.Rect(0, 0, WIDTH, HEADER_HEIGHT))
         pygame.draw.circle(screen, (255,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
@@ -333,6 +349,7 @@ def game(size, difficulty, name):
         
         pygame.display.flip()
 
+    # Animates the button in the header.
     def animate_header_button():
         pygame.draw.circle(screen, (139,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
         pygame.display.flip()
@@ -340,6 +357,7 @@ def game(size, difficulty, name):
         pygame.draw.circle(screen, (255,0,0), BUTTON_CENTRE, BUTTON_RADIUS)
         pygame.display.flip()
 
+    # Draws a button on the screen.
     def draw_button(screen, color, x, y, width, height, text, fontsize):
         pygame.draw.rect(screen, color, (x, y, width, height))
         
@@ -430,6 +448,7 @@ def game(size, difficulty, name):
 
     game_loop()
 
+# Displays the main menu where players can choose game settings and start the game.
 def main_menu():
     # Constants
     SCREEN_WIDTH = 800
@@ -447,6 +466,7 @@ def main_menu():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Main Menu")
 
+    # Draws a button on the screen.
     def draw_button(screen, color, x, y, width, height, text):
         pygame.draw.rect(screen, color, (x, y, width, height))
         
@@ -570,7 +590,8 @@ def main_menu():
             pygame.display.flip()
 
     return main_menu_loop()
-    
+  
+# Displays the leaderboard showing top scores for a specific game size and difficulty.
 def show_leaderboard(size, difficulty):
     with open(f"highscores_{size}_{difficulty}.txt", "r") as f:
         LEADERS = [line.strip() for line in f.readlines()[:5]]
@@ -588,6 +609,7 @@ def show_leaderboard(size, difficulty):
     # Fonts
     font = pygame.font.SysFont(None, 30)
 
+    # Draws text on the screen.
     def draw_text(text, font, color, surface, x, y):
         text_obj = font.render(text, True, color)
         text_rect = text_obj.get_rect()

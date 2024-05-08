@@ -1,6 +1,8 @@
 Jonathan: 0.857
 Truls: 0.916
 Truls: 1.033
+Truls: 1.246
 Jamal: 1.589
+Truls: 1.672
 Gustav: 1.860
 Fabian: 4.098
