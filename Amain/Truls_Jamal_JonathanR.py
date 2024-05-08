@@ -19,6 +19,7 @@ In summary, the code allows the player to play Minesweeper with different settin
 Date:              2024-05-08
 Author:            Truls borgvall, Jonathan Rönnäs och Jamal Mohammed
 """ 
+
 import pygame
 import random
 import sys
@@ -282,7 +283,7 @@ def game(size, difficulty, name):
             for column_tmp in range(SIZE):
                 if grid[row_tmp][column_tmp] == "x":
                     grid[row_tmp][column_tmp] = "xc"  # Reveal all mines
-                elif "f" in str(grid[row_tmp][column_tmp]) and "x" not in str(grid[row_tmp][column_tmp]): #DETTA OCH NEDANFÖR FANNS INTE INNAN
+                elif "f" in str(grid[row_tmp][column_tmp]) and "x" not in str(grid[row_tmp][column_tmp]): #handles wrongly placed flags
                     grid[row_tmp][column_tmp] = "w"
         grid[row][column] = "xp"
         draw_grid(grid)
@@ -296,6 +297,9 @@ def game(size, difficulty, name):
                     if (pos[0] - BUTTON_CENTRE[0])**2 + (pos[1] - BUTTON_CENTRE[1])**2 <= BUTTON_RADIUS**2:
                         animate_header_button()
                         click = True
+                elif event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
     # Description: Handles the win scenario.
     # Argument 1: None
@@ -309,6 +313,9 @@ def game(size, difficulty, name):
                     if (pos[0] - BUTTON_CENTRE[0])**2 + (pos[1] - BUTTON_CENTRE[1])**2 <= BUTTON_RADIUS**2:
                         animate_header_button()
                         click = True
+                elif event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
                     
         grid = createMap(SIZE, MINES)
         add_numbers(grid)
@@ -475,8 +482,7 @@ def game(size, difficulty, name):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    sys.exit()
-                    
+                    sys.exit()   
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     
@@ -513,7 +519,6 @@ def game(size, difficulty, name):
                             flags_left = MINES
                             grid = win()
                             first_press = True
-    
                     elif (pos[0] - BUTTON_CENTRE[0])**2 + (pos[1] - BUTTON_CENTRE[1])**2 <= BUTTON_RADIUS**2:
                         animate_header_button()
                         grid = createMap(SIZE, MINES)
@@ -591,7 +596,7 @@ def main_menu():
             draw_button(screen, RED if difficulty == "Hard" else GRAY, SCREEN_WIDTH / 2 + 150, 250, BUTTON_WIDTH, BUTTON_HEIGHT, "Hard")
 
             # Box to enter name
-            input_text = input_font.render("Enter your name:", True, BLACK, no_name)
+            input_text = input_font.render("Enter your name:    (Max 20 characters)", True, BLACK, no_name)
             input_rect = input_text.get_rect(topleft=(50, 100))
             screen.blit(input_text, input_rect)
 
@@ -613,8 +618,7 @@ def main_menu():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    sys.exit()
-                    
+                    sys.exit()                   
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     
@@ -645,9 +649,9 @@ def main_menu():
                     # Check if start game button clicked
                     start_game_button = pygame.Rect(SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, 350, BUTTON_WIDTH, BUTTON_HEIGHT)
                     if start_game_button.collidepoint(mouse_pos):
-                        if size is not None and difficulty is not None and name != "":
+                        if size is not None and difficulty is not None and name != "" and len(name) < 20:
                             return size, difficulty, name
-                        elif name == "":
+                        else:
                             no_name = RED
                             
                             
@@ -661,14 +665,14 @@ def main_menu():
                     if quit_button.collidepoint(mouse_pos):
                         pygame.quit()
                         sys.exit()
-                # Name input
+                # Name input:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_BACKSPACE:
                         name = name[:-1]
                     elif event.key == pygame.K_RETURN:
-                        if size is not None and difficulty is not None and name != "":
+                        if size is not None and difficulty is not None and name != "" and len(name) < 20:
                             return size, difficulty, name
-                        elif name == "":
+                        else:
                             no_name = RED
                     else:
                         name += event.unicode
@@ -702,7 +706,6 @@ def show_leaderboard(size, difficulty):
         text_rect.center = (x, y)
         surface.blit(text_obj, text_rect)
 
-    
     while True:
         screen.fill(WHITE)
         draw_text(f"Leaderboard for {size} & {difficulty}", font, BLACK, screen, WIDTH // 2, 100)
