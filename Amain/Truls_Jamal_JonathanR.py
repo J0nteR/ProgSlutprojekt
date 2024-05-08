@@ -1,4 +1,4 @@
-""" Beskrivning:
+""" Description:
 This code implements the Minesweeper game using the Pygame library. Here's an overview of what the code does:
 
 1.Game Settings and Graphics Initialization: The code initializes settings for game size, colors, and graphics.
@@ -16,9 +16,8 @@ to specify all necessary settings. Menu management features allow the player to 
 
 In summary, the code allows the player to play Minesweeper with different settings and offers a user-friendly interface for interaction.
 
-# Datum:              2024-05-08
-# Namn:               Truls borgvall, Jonathan Rönnäs och Jamal Mohammed
-
+Date:              2024-05-08
+Author:            Truls borgvall, Jonathan Rönnäs och Jamal Mohammed
 """ 
 import pygame
 import random
