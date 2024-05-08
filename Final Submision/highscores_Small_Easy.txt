@@ -1,0 +1,5 @@
+Jonathan: 0.857
+Truls: 0.916
+Jamal: 1.589
+Gustav: 1.860
+Fabian: 4.098
