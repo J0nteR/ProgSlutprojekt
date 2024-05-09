@@ -17,7 +17,7 @@ to specify all necessary settings. Menu management features allow the player to 
 In summary, the code allows the player to play Minesweeper with different settings and offers a user-friendly interface for interaction.
 
 Date:              2024-05-08
-Author:            Truls borgvall, Jonathan Rönnäs och Jamal Mohammed
+Author:            Truls Borgvall, Jonathan Rönnäs och Jamal Mohammed
 """ 
 
 import pygame

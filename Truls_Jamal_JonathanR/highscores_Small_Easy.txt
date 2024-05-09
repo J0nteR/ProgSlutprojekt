@@ -1,5 +1,7 @@
+JonathanTEST: 0.660
 Jonathan: 0.857
 Truls: 0.916
 Jamal: 1.589
+JOnte: 1.767
 Gustav: 1.860
 Fabian: 4.098

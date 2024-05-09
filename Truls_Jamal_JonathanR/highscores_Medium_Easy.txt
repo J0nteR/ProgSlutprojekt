@@ -1,4 +1,5 @@
-Jonathan: 23.410
+Jonathan: 12.575
+JONTE1: 19.130
 JOnte: 28.583
 Jonathan: 304.123
 Truls: 326.321
